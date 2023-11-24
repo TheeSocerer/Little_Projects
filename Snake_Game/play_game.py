@@ -29,7 +29,7 @@ def go_left():
     if snake_direction != "right":
         snake_direction = "left"
         
-# Calculate distance
+# Calculate distance betweet the snake food and the snake head
 def get_distance(food,snake):
     return ((food[0]-snake[0])**2+(food[1]-food[0])**2)**0.5
 # random psotion
@@ -44,7 +44,6 @@ def food_collision():
         food.setposition(food_position)
         return True
     return False
-    
     
 def animate_snake():
     stamper.clearstamps()
