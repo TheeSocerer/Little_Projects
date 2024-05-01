@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.sql.DataTruncation;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -44,7 +45,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
 
 
-        gameloop = new Timer(100,this);
+        gameloop = new Timer(200,this);
         gameloop.start();
     }
     public void move(){
@@ -150,18 +151,32 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         //food
 
         g.setColor(Color.RED);
-        g.fillRect(food.x*tileSize,food.y*tileSize, tileSize, tileSize);
+//        g.fillRect(food.x*tileSize,food.y*tileSize, tileSize, tileSize);
+        g.fill3DRect(food.x*tileSize,food.y*tileSize, tileSize, tileSize, true);
 
 
 
         //snake
         g.setColor(Color.green);
-        g.fillRect(snakeHead.x*tileSize, snakeHead.y*tileSize,tileSize,tileSize);
+//        g.fillRect(snakeHead.x*tileSize, snakeHead.y*tileSize,tileSize,tileSize);
+        g.fill3DRect(snakeHead.x*tileSize, snakeHead.y*tileSize,tileSize,tileSize, true);
+
 
         //Snake body
         for( int i = 0; i< snakeBody.size(); i++){
             Tile snakePart = snakeBody.get(i);
-            g.fillRect(snakePart.x*tileSize, snakePart.y*tileSize, tileSize, tileSize);
+//            g.fillRect(snakePart.x*tileSize, snakePart.y*tileSize, tileSize, tileSize);
+            g.fill3DRect(snakePart.x*tileSize, snakePart.y*tileSize, tileSize, tileSize,true);
+
+        }
+
+        //Score
+        g.setFont(new Font("Arial", Font.PLAIN, 17));
+        if( gameOver){
+            g.setColor(Color.RED);
+            g.drawString("GAME OVER: " + String.valueOf(snakeBody.size()),tileSize-17,tileSize);
+        }else {
+            g.drawString("SCORE: "+ String.valueOf(snakeBody.size()), tileSize-17, tileSize);
         }
 
     }
