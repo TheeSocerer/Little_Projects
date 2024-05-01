@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class SnakeGame extends JPanel implements ActionListener, KeyListener {
@@ -12,6 +13,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     int tileSize = 25;
 
     Tile snakeHead;
+    ArrayList<Tile> snakeBody;
     Tile food;
 
     Random random;
@@ -20,6 +22,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     Timer gameloop;
     int velocityX;
     int velocityY;
+    boolean gameOver = false;
     public SnakeGame(int boardHeight, int boardWidth){
         this.boardHeight = boardHeight;
         this.boardWidth = boardWidth;
@@ -30,6 +33,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         setFocusable(true);
 
         snakeHead = new Tile(5,5);
+        snakeBody = new ArrayList<Tile>();
 
         food = new Tile(10,10);
         random = new Random();
@@ -37,18 +41,59 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
         velocityX = 0;
         velocityY = 0;
+
+
+
         gameloop = new Timer(100,this);
         gameloop.start();
     }
     public void move(){
+        if( collisions(snakeHead, food)){
+            snakeBody.add(new Tile(food.x,food.y));
+            placeFood();
+
+        }
+        //Snake Body
+        for( int i = snakeBody.size()-1; i>=0;i--){
+            Tile snakePart = snakeBody.get(i);
+            if( i == 0){
+                snakePart.x = snakeHead.x;
+                snakePart.y = snakeHead.y;
+            }else {
+                Tile prevSnakePArt = snakeBody.get(i-1);
+                snakePart.x = prevSnakePArt.x;
+                snakePart.y = prevSnakePArt.y;
+            }
+        }
+
         //Snake Head
         snakeHead.x += velocityX;
         snakeHead.y += velocityY;
+
+        //game over condition
+        for( int i = 0; i<snakeBody.size(); i++){
+            Tile snakePart = snakeBody.get(i);
+            if( collisions(snakeHead , snakePart)){
+                gameOver = true;
+            }
+        }
+
+        if ( snakeHead.x*tileSize<=0 || snakeHead.x*tileSize>=boardWidth ||
+        snakeHead.y*tileSize<=0 || snakeHead.y*tileSize>=boardHeight){
+            gameOver = true;
+        }
+
+    }
+    public boolean collisions(Tile tile1, Tile tile2){
+        return tile1.x == tile2.x && tile1.y == tile2.y;
     }
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         move();
         repaint();
+        if (gameOver){
+            gameloop.stop();
+        }
     }
 
 
@@ -107,9 +152,17 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         g.setColor(Color.RED);
         g.fillRect(food.x*tileSize,food.y*tileSize, tileSize, tileSize);
 
+
+
         //snake
         g.setColor(Color.green);
         g.fillRect(snakeHead.x*tileSize, snakeHead.y*tileSize,tileSize,tileSize);
+
+        //Snake body
+        for( int i = 0; i< snakeBody.size(); i++){
+            Tile snakePart = snakeBody.get(i);
+            g.fillRect(snakePart.x*tileSize, snakePart.y*tileSize, tileSize, tileSize);
+        }
 
     }
 
