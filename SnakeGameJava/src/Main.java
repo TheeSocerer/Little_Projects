@@ -2,7 +2,7 @@ import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        int boardWidth = 600;
+        int boardWidth = 700;
         int boardHeight = boardWidth;
 
 
