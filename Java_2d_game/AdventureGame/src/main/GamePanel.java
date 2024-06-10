@@ -1,6 +1,7 @@
 package main;
 
 import main.KeyHandler;
+import tile.TileManager;
 import user.Player;
 
 import javax.swing.*;
@@ -13,14 +14,22 @@ public class GamePanel extends JPanel implements Runnable{
     final int originalTileSize = 16;
     final int scale = 3;
     public final int tileSize = originalTileSize * scale; //48X48
-    final int maxScreenCol = 16;
-    final int maxScreenRow = 12;
-    final int screenWidth = tileSize* maxScreenCol;// 768 pixels
-    final int screenHeight = tileSize* maxScreenRow;//576 pixels
+    public final int maxScreenCol = 16;
+    public final int maxScreenRow = 12;
+    public final int screenWidth = tileSize* maxScreenCol;// 768 pixels
+    public final int screenHeight = tileSize* maxScreenRow;//576 pixels
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
-    Player player = new Player(this, keyH);
+
+    public CollisionChecker cChecker = new CollisionChecker(this);
+    public Player player = new Player(this, keyH);
+    //world settings
+    public final int maxWorldCol = 50;
+    public final int maxWorldRow = 50;
+    public final int worldWidth = maxWorldCol * tileSize;
+    public final int worldHeight = maxWorldRow * tileSize;
     //fps = 60
+    TileManager tileM = new TileManager(this);
     private int FPS = 60;
 
     //set players defaulst psoition
@@ -105,6 +114,8 @@ public void run() {
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+        tileM.draw(g2);
         player.draw(g2);
+        g2.dispose();
     }
 }
